@@ -1,8 +1,9 @@
 package registers_test
 
 import (
-	"macho-aarch64-asm/aarch64/registers"
 	"testing"
+
+	"github.com/RealA10N/macho-aarch64-asm/aarch64/registers"
 
 	"github.com/stretchr/testify/assert"
 )
