@@ -24,5 +24,5 @@ func NewAddRegister(destination, first, second registers.GeneralPurposeRegister)
 }
 
 func (inst AddRegister) String() string {
-	return fmt.Sprintf("ADD %s, %s, %s", inst.destination, inst.first, inst.second)
+	return fmt.Sprintf("add %s, %s, %s", inst.destination, inst.first, inst.second)
 }

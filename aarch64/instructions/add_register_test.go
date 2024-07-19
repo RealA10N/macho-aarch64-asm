@@ -19,7 +19,7 @@ func TestSimpleWordAddition(t *testing.T) {
 	inst, err := instructions.NewAddRegister(w0, w0, w1)
 	assert.NoError(t, err)
 
-	assert.Equal(t, inst.String(), "ADD w0, w0, w1")
+	assert.Equal(t, inst.String(), "add w0, w0, w1")
 }
 
 func TestSimpleExtendedAddition(t *testing.T) {
@@ -35,7 +35,7 @@ func TestSimpleExtendedAddition(t *testing.T) {
 	inst, err := instructions.NewAddRegister(x1, x2, x3)
 	assert.NoError(t, err)
 
-	assert.Equal(t, inst.String(), "ADD x1, x2, x3")
+	assert.Equal(t, inst.String(), "add x1, x2, x3")
 }
 
 func TestWrongRegisterTypes(t *testing.T) {
