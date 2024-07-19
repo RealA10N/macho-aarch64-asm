@@ -2,16 +2,15 @@ package instructions
 
 import (
 	"fmt"
-	"macho-aarch64-asm/aarch64/registers"
+
+	"github.com/RealA10N/macho-aarch64-asm/aarch64/registers"
 )
 
 type AddRegister struct {
-	destination registers.GeneralPurposeRegister
-	first       registers.GeneralPurposeRegister
-	second      registers.GeneralPurposeRegister
+	destination, first, second registers.GeneralPurposeRegister
 }
 
-func NewAddRegister(destination registers.GeneralPurposeRegister, first registers.GeneralPurposeRegister, second registers.GeneralPurposeRegister) (inst AddRegister, err error) {
+func NewAddRegister(destination, first, second registers.GeneralPurposeRegister) (inst AddRegister, err error) {
 	inst = AddRegister{destination, first, second}
 
 	for _, register := range []*registers.GeneralPurposeRegister{&first, &second} {
