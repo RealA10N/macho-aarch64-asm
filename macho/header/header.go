@@ -6,6 +6,11 @@
 
 package header
 
+import (
+	"bytes"
+	"encoding/binary"
+)
+
 type Magic uint32
 
 const (
@@ -134,12 +139,23 @@ const (
 )
 
 type MachoHeader struct {
-	magic              Magic
-	cpuType            CpuType
-	cpuSubType         CpuSubType
-	fileType           FileType
-	numOfLoadCommands  uint32
-	sizeOfLoadCommands uint32
-	flags              Flags
-	reserved           uint32 // additional 32 padding bits are required in 64bit architectures
+	Magic              Magic
+	CpuType            CpuType
+	CpuSubType         CpuSubType
+	FileType           FileType
+	NumOfLoadCommands  uint32
+	SizeOfLoadCommands uint32
+	Flags              Flags
+	Reserved           uint32 // additional 32 padding bits are required in 64bit architectures
+}
+
+func (header MachoHeader) MarshalBinary() ([]byte, error) {
+	buffer := new(bytes.Buffer)
+	err := binary.Write(buffer, binary.LittleEndian, header)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return buffer.Bytes(), nil
 }
