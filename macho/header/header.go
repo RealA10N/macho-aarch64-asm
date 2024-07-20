@@ -1,0 +1,145 @@
+// References:
+// https://en.wikipedia.org/wiki/Mach-O
+// https://github.com/aidansteele/osx-abi-macho-file-format-reference
+// https://github.com/opensource-apple/cctools/
+// https://opensource.apple.com/source/xnu/xnu-4570.41.2/EXTERNAL_HEADERS/mach-o/loader.h.auto.html
+
+package header
+
+type Magic uint32
+
+const (
+	// Source: https://en.wikipedia.org/wiki/Mach-O
+
+	Magic32Bit Magic = 0xfeedface
+	Magic64Bit Magic = 0xfeedfacf
+)
+
+type CpuType uint32
+
+const (
+	// Source: https://en.wikipedia.org/wiki/Mach-O
+
+	VAX        CpuType = 0x00000001
+	ROMP       CpuType = 0x00000002
+	NS32032    CpuType = 0x00000004
+	NS32332    CpuType = 0x00000005
+	MC680x0    CpuType = 0x00000006
+	x86        CpuType = 0x00000007
+	MIPS       CpuType = 0x00000008
+	NS32352    CpuType = 0x00000009
+	MC98000    CpuType = 0x0000000A
+	HPPA       CpuType = 0x0000000B
+	ARM        CpuType = 0x0000000C
+	MC88000    CpuType = 0x0000000D
+	SPARC      CpuType = 0x0000000E
+	i860Big    CpuType = 0x0000000F
+	i860Little CpuType = 0x00000010
+	RS6000     CpuType = 0x00000011
+	PowerPC    CpuType = 0x00000012
+)
+
+type CpuSubType uint32
+
+const (
+	// Source: https://en.wikipedia.org/wiki/Mach-O
+
+	AllArmProcessors   CpuSubType = 0x00000000
+	ArmA500ARCHOrNewer CpuSubType = 0x00000001
+	ArmA500OrNewer     CpuSubType = 0x00000002
+	ArmA440OrNewer     CpuSubType = 0x00000003
+	ArmM4OrNewer       CpuSubType = 0x00000004
+	ArmV4TOrNewer      CpuSubType = 0x00000005
+	ArmV6OrNewer       CpuSubType = 0x00000006
+	ArmV5TEJOrNewer    CpuSubType = 0x00000007
+	ArmXSCALEOrNewer   CpuSubType = 0x00000008
+	ArmV7OrNewer       CpuSubType = 0x00000009
+	ArmV7FOrNewer      CpuSubType = 0x0000000A
+	ArmV7SOrNewer      CpuSubType = 0x0000000B
+	ArmV7KOrNewer      CpuSubType = 0x0000000C
+	ArmV8OrNewer       CpuSubType = 0x0000000D
+	ArmV6MOrNewer      CpuSubType = 0x0000000E
+	ArmV7MOrNewer      CpuSubType = 0x0000000F
+	ArmV7EMOrNewer     CpuSubType = 0x00000010
+
+	Allx86Processors       CpuSubType = 0x00000003
+	x86486OrNewer          CpuSubType = 0x00000004
+	x86486SXOrNewer        CpuSubType = 0x00000084
+	x86PentiumM5OrNewer    CpuSubType = 0x00000056
+	x86CeleronOrNewer      CpuSubType = 0x00000067
+	x86CeleronMobile       CpuSubType = 0x00000077
+	x86Pentium3OrNewer     CpuSubType = 0x00000008
+	x86Pentium3MOrNewer    CpuSubType = 0x00000018
+	x86Pentium3XEONOrNewer CpuSubType = 0x00000028
+	x86Pentium4OrNewer     CpuSubType = 0x0000000A
+	x86ItaniumOrNewer      CpuSubType = 0x0000000B
+	x86Itanium2OrNewer     CpuSubType = 0x0000001B
+	x86XEONOrNewer         CpuSubType = 0x0000000C
+	x86XEONMPOrNewer       CpuSubType = 0x0000001C
+)
+
+type FileType uint32
+
+const (
+	// Source: https://en.wikipedia.org/wiki/Mach-O
+
+	Object             FileType = 0x00000001 // Relocatable object file.
+	Executable         FileType = 0x00000002 // Demand paged executable file.
+	FixedVMLib         FileType = 0x00000003 // Fixed VM shared library file.
+	Core               FileType = 0x00000004 // Core file.
+	Preload            FileType = 0x00000005 // Preloaded executable file.
+	DynamicLibrary     FileType = 0x00000006 // Dynamically bound shared library file.
+	DynamicLinker      FileType = 0x00000007 // Dynamic link editor.
+	Bundle             FileType = 0x00000008 // Dynamically bound bundle file.
+	DynamicLibraryStub FileType = 0x00000009 // Shared library stub for static linking only, no section contents.
+	DynamicSymbols     FileType = 0x0000000A // Companion file with only debug sections.
+	KextsBundle        FileType = 0x0000000B // x86_64 kexts.
+	Composed           FileType = 0x0000000C // a file composed of other Mach-Os to be run in the same userspace sharing a single linkedit.
+)
+
+type Flags uint32
+
+const (
+	// Sources:
+	// https://en.wikipedia.org/wiki/Mach-O
+	// https://github.com/opensource-apple/cctools/blob/fdb4825f303fd5c0751be524babd32958181b3ed/include/mach-o/loader.h#L125
+	// There might exist additional flags stated below
+
+	NoUndefs              Flags = 1 << 0  // The object file has no undefined references.
+	IncLink               Flags = 1 << 1  // The object file is the output of an incremental link against a base file and can't be link edited again.
+	DyLdLink              Flags = 1 << 2  // The object file is input for the dynamic linker and can't be statically link edited again.
+	BinDatLoad            Flags = 1 << 3  // The object file's undefined references are bound by the dynamic linker when loaded.
+	Prebound              Flags = 1 << 4  // The file has its dynamic undefined references prebound.
+	SplitSegs             Flags = 1 << 5  // The file has its read-only and read-write segments split.
+	LazyInit              Flags = 1 << 6  // The shared library init routine is to be run lazily via catching memory faults to its writeable segments (obsolete).
+	TwoLevel              Flags = 1 << 7  // The image is using two-level name space bindings.
+	ForceFlat             Flags = 1 << 8  // The executable is forcing all images to use flat name space bindings.
+	NoMultiDefs           Flags = 1 << 9  // This umbrella guarantees no multiple definitions of symbols in its sub-images so the two-level namespace hints can always be used.
+	NoFixPreBinding       Flags = 1 << 10 // Do not have dyld notify the prebinding agent about this executable.
+	PreBindable           Flags = 1 << 11 // The binary is not prebound but can have its prebinding redone. only used when MH_PREBOUND is not set.
+	AllModsBound          Flags = 1 << 12 // Indicates that this binary binds to all two-level namespace modules of its dependent libraries.
+	SubsectionsViaSymbols Flags = 1 << 13 // Safe to divide up the sections into sub-sections via symbols for dead code stripping.
+	Canonical             Flags = 1 << 14 // The binary has been canonicalized via the un-prebind operation.
+	WeakDefines           Flags = 1 << 15 // The final linked image contains external weak symbols.
+	BindsToWeak           Flags = 1 << 16 // The final linked image uses weak symbols.
+	AllowStackExecution   Flags = 1 << 17 // When this bit is set, all stacks in the task will be given stack execution privilege.
+	RootSafe              Flags = 1 << 18 // When this bit is set, the binary declares it is safe for use in processes with uid zero.
+	SetUidSafe            Flags = 1 << 19 // When this bit is set, the binary declares it is safe for use in processes when UGID is true.
+	NoReExportedDyLibs    Flags = 1 << 20 // When this bit is set on a dylib, the static linker does not need to examine dependent dylibs to see if any are re-exported.
+	Pie                   Flags = 1 << 21 // When this bit is set, the OS will load the main executable at a random address.
+	DeadStrippableDyLib   Flags = 1 << 22 // Only for use on dylibs. When linking against a dylib that has this bit set, the static linker will automatically not create a load command to the dylib if no symbols are being referenced from the dylib.
+	HasTlvDescriptors     Flags = 1 << 23 // Contains a section of type S_THREAD_LOCAL_VARIABLES.
+	NoHeapExecution       Flags = 1 << 24 // When this bit is set, the OS will run the main executable with a non-executable heap even on platforms (e.g. i386) that don't require it.
+	AppExtensionSafe      Flags = 1 << 25 // The code was linked for use in an application.
+)
+
+type MachoHeader struct {
+	magic              Magic
+	cpuType            CpuType
+	cpuSubType         CpuSubType
+	fileType           FileType
+	numOfLoadCommands  uint32
+	sizeOfLoadCommands uint32
+	flags              Flags
+	reserved           uint32 // additional 32 padding bits are required in 64bit architectures
+}
