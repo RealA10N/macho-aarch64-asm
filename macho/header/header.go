@@ -23,25 +23,32 @@ const (
 type CpuType uint32
 
 const (
-	// Source: https://en.wikipedia.org/wiki/Mach-O
+	// Sources:
+	// https://en.wikipedia.org/wiki/Mach-O
+	// https://opensource.apple.com/source/xnu/xnu-4570.41.2/osfmk/mach/machine.h.auto.html
 
-	VAX        CpuType = 0x00000001
-	ROMP       CpuType = 0x00000002
-	NS32032    CpuType = 0x00000004
-	NS32332    CpuType = 0x00000005
-	MC680x0    CpuType = 0x00000006
-	x86        CpuType = 0x00000007
-	MIPS       CpuType = 0x00000008
-	NS32352    CpuType = 0x00000009
-	MC98000    CpuType = 0x0000000A
-	HPPA       CpuType = 0x0000000B
-	ARM        CpuType = 0x0000000C
-	MC88000    CpuType = 0x0000000D
-	SPARC      CpuType = 0x0000000E
-	i860Big    CpuType = 0x0000000F
-	i860Little CpuType = 0x00000010
-	RS6000     CpuType = 0x00000011
-	PowerPC    CpuType = 0x00000012
+	VaxCpuType        CpuType = 0x00000001
+	RompCpuType       CpuType = 0x00000002
+	Ns32032CpuType    CpuType = 0x00000004
+	Ns32332CpuType    CpuType = 0x00000005
+	Mc680x0CpuType    CpuType = 0x00000006
+	x86CpuType        CpuType = 0x00000007
+	MipsCpuType       CpuType = 0x00000008
+	Ns32352CpuType    CpuType = 0x00000009
+	Mc98000CpuType    CpuType = 0x0000000A
+	HppaCpuType       CpuType = 0x0000000B
+	ArmCpuType        CpuType = 0x0000000C
+	Mc88000CpuType    CpuType = 0x0000000D
+	SparcCpuType      CpuType = 0x0000000E
+	i860BigCpuType    CpuType = 0x0000000F
+	i860LittleCpuType CpuType = 0x00000010
+	Rs6000CpuType     CpuType = 0x00000011
+	PowerPCCpuType    CpuType = 0x00000012
+
+	ABI64Arch        CpuType = 0x01000000 // 64 bit ABI
+	x8664CpuType     CpuType = x86CpuType | ABI64Arch
+	Arm64CpuType     CpuType = ArmCpuType | ABI64Arch
+	PowerPC64CpuType CpuType = PowerPCCpuType | ABI64Arch
 )
 
 type CpuSubType uint32

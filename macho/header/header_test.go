@@ -17,7 +17,7 @@ func TestHeaderMarshalBinary(t *testing.T) {
 
 	header := header.MachoHeader{
 		Magic:              header.Magic64Bit,
-		CpuType:            header.ARM | header.ArchABI64,
+		CpuType:            header.Arm64CpuType,
 		CpuSubType:         header.AllArmProcessors,
 		FileType:           header.Object,
 		NumOfLoadCommands:  4,
