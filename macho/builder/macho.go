@@ -1,39 +1,18 @@
 package builder
 
 import (
-	"encoding"
 	"fmt"
 	"io"
 
 	"github.com/RealA10N/macho-aarch64-asm/macho/header"
 )
 
-type CommandHeaderBuilder interface {
-	io.WriterTo
-}
-type CommandDataBuilder interface {
-	io.WriterTo
-}
-
-type CommandBuilder interface {
-	GetHeaderSize() int64
-	SetOffset(offest int64) (CommandHeaderBuilder, CommandDataBuilder)
-}
-
 type MachoBuilder struct {
 	Header   header.MachoHeader
 	Commands []CommandBuilder
 }
 
-func WriteTo(obj encoding.BinaryMarshaler, writer io.Writer) (int, error) {
-	data, err := obj.MarshalBinary()
-	if err != nil {
-		return 0, err
-	}
-	return writer.Write(data)
-}
-
-func (macho MachoBuilder) allHeadersSize() (n int64) {
+func (macho MachoBuilder) allHeadersSize() (n uint64) {
 	for _, cmd := range macho.Commands {
 		n += cmd.GetHeaderSize()
 	}
@@ -48,29 +27,29 @@ func (macho MachoBuilder) WriteTo(writer io.Writer) (n int64, err error) {
 		return
 	}
 
-	dataBuilders := []CommandDataBuilder{}
-	dataOffset := n + macho.allHeadersSize()
+	ctx := CommandBuilderContext{DataOffset: uint64(n) + macho.allHeadersSize()}
 
 	for _, cmd := range macho.Commands {
-		header, data := cmd.SetOffset(dataOffset)
-
-		k, err = header.WriteTo(writer)
+		k, err = cmd.HeaderWriteTo(writer, ctx)
 		n += k
 		if err != nil {
 			return
 		}
 
-		dataBuilders = append(dataBuilders, data)
-		dataOffset += k
+		ctx.DataOffset += cmd.GetDataSize()
 	}
 
-	if n != dataOffset {
-		err = fmt.Errorf("expected macho header %d (actual %d)", dataOffset, n)
+	// TODO: we SHOULD  check that the header sizes that the commands have
+	// 'committed' to (via GetHeaderSize, GetDataSize) actually equal to the
+	// size they write.
+
+	if ctx.DataOffset != uint64(n) {
+		err = fmt.Errorf("expected headers size %d (actually %d)", ctx.DataOffset, n)
 		return
 	}
 
-	for _, data := range dataBuilders {
-		k, err = data.WriteTo(writer)
+	for _, cmd := range macho.Commands {
+		k, err = cmd.DataWriteTo(writer)
 		n += k
 		if err != nil {
 			return
