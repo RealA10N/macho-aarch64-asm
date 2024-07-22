@@ -12,9 +12,9 @@ type MachoBuilder struct {
 	Commands []CommandBuilder
 }
 
-func (macho MachoBuilder) allHeadersSize() (n uint64) {
+func (macho MachoBuilder) allHeadersLen() (n uint64) {
 	for _, cmd := range macho.Commands {
-		n += cmd.GetHeaderSize()
+		n += cmd.GetHeaderLen()
 	}
 	return
 }
@@ -27,7 +27,7 @@ func (macho MachoBuilder) WriteTo(writer io.Writer) (n int64, err error) {
 		return
 	}
 
-	ctx := CommandBuilderContext{DataOffset: uint64(n) + macho.allHeadersSize()}
+	ctx := CommandBuilderContext{DataOffset: uint64(n) + macho.allHeadersLen()}
 
 	for _, cmd := range macho.Commands {
 		k, err = cmd.HeaderWriteTo(writer, ctx)
@@ -36,10 +36,10 @@ func (macho MachoBuilder) WriteTo(writer io.Writer) (n int64, err error) {
 			return
 		}
 
-		ctx.DataOffset += cmd.GetDataSize()
+		ctx.DataOffset += cmd.GetDataLen()
 	}
 
-	// TODO: we SHOULD  check that the header sizes that the commands have
+	// TODO: we SHOULD  check that the header lengths that the commands have
 	// 'committed' to (via GetHeaderSize, GetDataSize) actually equal to the
 	// size they write.
 
