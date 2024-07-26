@@ -3,6 +3,7 @@ package section64
 import (
 	"bytes"
 	"encoding/binary"
+	"io"
 )
 
 type Section64Flags uint32
@@ -65,7 +66,7 @@ const (
 	AttrLocalRelocation    Section64Flags = 0x00000100 // section has local relocation entries
 )
 
-type Section64 struct {
+type Section64Header struct {
 	SectionName         [16]byte
 	SegmentName         [16]byte
 	Address             uint64
@@ -78,11 +79,13 @@ type Section64 struct {
 	Reserved1           uint32
 	Reserved2           uint32
 	Reserved3           uint32
-	// not sure if there are 2 or 3 reserved values?
+	// TODO: not sure if there are 2 or 3 reserved values?
 	// My tests show that there are 3 but the reference says there are only 2.
 }
 
-func (section Section64) MarshalBinary() ([]byte, error) {
+const Section64HeaderSize uint64 = 0x50
+
+func (section Section64Header) MarshalBinary() ([]byte, error) {
 	buffer := new(bytes.Buffer)
 	err := binary.Write(buffer, binary.LittleEndian, section)
 
@@ -91,4 +94,14 @@ func (section Section64) MarshalBinary() ([]byte, error) {
 	}
 
 	return buffer.Bytes(), nil
+}
+
+func (section Section64Header) WriteTo(writer io.Writer) (int64, error) {
+	data, err := section.MarshalBinary()
+	if err != nil {
+		return 0, err
+	}
+
+	n, err := writer.Write(data)
+	return int64(n), err
 }

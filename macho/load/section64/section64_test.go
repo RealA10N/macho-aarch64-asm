@@ -1,13 +1,14 @@
 package section64_test
 
 import (
+	"bytes"
 	"testing"
 
 	"github.com/RealA10N/macho-aarch64-asm/macho/load/section64"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestSection64ExpectedMarshalBinary(t *testing.T) {
+func TestSection64ExpectedBinary(t *testing.T) {
 	expected := []byte{
 		0x5F, 0x5F, 0x74, 0x65, 0x78, 0x74, 0x00, 0x00,
 		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -21,7 +22,7 @@ func TestSection64ExpectedMarshalBinary(t *testing.T) {
 		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 	}
 
-	section := section64.Section64{
+	section := section64.Section64Header{
 		SectionName:         [16]byte{'_', '_', 't', 'e', 'x', 't', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 		SegmentName:         [16]byte{'_', '_', 'T', 'E', 'X', 'T', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 		Address:             0,
@@ -33,8 +34,17 @@ func TestSection64ExpectedMarshalBinary(t *testing.T) {
 		Flags:               section64.AttrPureInstructions | section64.AttrSomeInstructions,
 	}
 
-	got, err := section.MarshalBinary()
+	{
+		got, err := section.MarshalBinary()
+		assert.NoError(t, err)
+		assert.Equal(t, expected, got)
+	}
 
-	assert.NoError(t, err)
-	assert.Equal(t, expected, got)
+	{
+		buffer := new(bytes.Buffer)
+		n, err := section.WriteTo(buffer)
+		assert.NoError(t, err)
+		assert.EqualValues(t, section64.Section64HeaderSize, n)
+		assert.Equal(t, expected, buffer.Bytes())
+	}
 }
