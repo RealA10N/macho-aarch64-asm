@@ -87,6 +87,8 @@ type MachoHeader struct {
 	Reserved           uint32 // additional 32 padding bits are required in 64bit architectures
 }
 
+const MachoHeaderSize uint64 = 0x20
+
 func (header MachoHeader) MarshalBinary() ([]byte, error) {
 	buffer := new(bytes.Buffer)
 	err := binary.Write(buffer, binary.LittleEndian, header)
