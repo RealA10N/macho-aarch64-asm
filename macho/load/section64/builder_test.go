@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/RealA10N/macho-aarch64-asm/macho/builder"
+	"github.com/RealA10N/macho-aarch64-asm/macho/builder/context"
 	"github.com/RealA10N/macho-aarch64-asm/macho/load/section64"
 	"github.com/stretchr/testify/assert"
 )
@@ -37,8 +37,8 @@ func TestSegmentBuilderExpectedBinary(t *testing.T) {
 
 	{
 		buffer := new(bytes.Buffer)
-		ctx := builder.CommandBuilderContext{DataOffset: 312}
-		n, err := sectionBuilder.HeaderWriteTo(buffer, ctx)
+		ctx := context.CommandContext{DataOffset: 312}
+		n, err := sectionBuilder.HeaderWriteTo(buffer, &ctx)
 
 		assert.NoError(t, err)
 		assert.EqualValues(t, len(expectedHeader), n)
