@@ -12,7 +12,7 @@ const (
 	Ns32032CpuType    CpuType = 0x00000004
 	Ns32332CpuType    CpuType = 0x00000005
 	Mc680x0CpuType    CpuType = 0x00000006
-	x86CpuType        CpuType = 0x00000007
+	X86CpuType        CpuType = 0x00000007
 	MipsCpuType       CpuType = 0x00000008
 	Ns32352CpuType    CpuType = 0x00000009
 	Mc98000CpuType    CpuType = 0x0000000A
@@ -20,13 +20,13 @@ const (
 	ArmCpuType        CpuType = 0x0000000C
 	Mc88000CpuType    CpuType = 0x0000000D
 	SparcCpuType      CpuType = 0x0000000E
-	i860BigCpuType    CpuType = 0x0000000F
-	i860LittleCpuType CpuType = 0x00000010
+	I860BigCpuType    CpuType = 0x0000000F
+	I860LittleCpuType CpuType = 0x00000010
 	Rs6000CpuType     CpuType = 0x00000011
 	PowerPCCpuType    CpuType = 0x00000012
 
 	ABI64Arch        CpuType = 0x01000000 // 64 bit ABI
-	x8664CpuType     CpuType = x86CpuType | ABI64Arch
+	X8664CpuType     CpuType = X86CpuType | ABI64Arch
 	Arm64CpuType     CpuType = ArmCpuType | ABI64Arch
 	PowerPC64CpuType CpuType = PowerPCCpuType | ABI64Arch
 )
@@ -67,17 +67,17 @@ const (
 	ArmV7EMOrNewer     CpuSubType = 0x00000010
 
 	Allx86Processors       CpuSubType = 0x00000003
-	x86486OrNewer          CpuSubType = 0x00000004
-	x86486SXOrNewer        CpuSubType = 0x00000084
-	x86PentiumM5OrNewer    CpuSubType = 0x00000056
-	x86CeleronOrNewer      CpuSubType = 0x00000067
-	x86CeleronMobile       CpuSubType = 0x00000077
-	x86Pentium3OrNewer     CpuSubType = 0x00000008
-	x86Pentium3MOrNewer    CpuSubType = 0x00000018
-	x86Pentium3XEONOrNewer CpuSubType = 0x00000028
-	x86Pentium4OrNewer     CpuSubType = 0x0000000A
-	x86ItaniumOrNewer      CpuSubType = 0x0000000B
-	x86Itanium2OrNewer     CpuSubType = 0x0000001B
-	x86XEONOrNewer         CpuSubType = 0x0000000C
-	x86XEONMPOrNewer       CpuSubType = 0x0000001C
+	X86486OrNewer          CpuSubType = 0x00000004
+	X86486SXOrNewer        CpuSubType = 0x00000084
+	X86PentiumM5OrNewer    CpuSubType = 0x00000056
+	X86CeleronOrNewer      CpuSubType = 0x00000067
+	X86CeleronMobile       CpuSubType = 0x00000077
+	X86Pentium3OrNewer     CpuSubType = 0x00000008
+	X86Pentium3MOrNewer    CpuSubType = 0x00000018
+	X86Pentium3XEONOrNewer CpuSubType = 0x00000028
+	X86Pentium4OrNewer     CpuSubType = 0x0000000A
+	X86ItaniumOrNewer      CpuSubType = 0x0000000B
+	X86Itanium2OrNewer     CpuSubType = 0x0000001B
+	X86XEONOrNewer         CpuSubType = 0x0000000C
+	X86XEONMPOrNewer       CpuSubType = 0x0000001C
 )
