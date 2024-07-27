@@ -77,6 +77,8 @@ type Segment64Header struct {
 	Flags                Segment64Flag
 }
 
+const Segment64HeaderSize uint64 = 0x48
+
 func (segment Segment64Header) MarshalBinary() ([]byte, error) {
 	buffer := new(bytes.Buffer)
 	err := binary.Write(buffer, binary.LittleEndian, segment)

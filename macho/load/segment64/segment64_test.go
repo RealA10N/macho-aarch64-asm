@@ -39,4 +39,5 @@ func TestSegment64HeaderExpectedMarshalBinary(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.Equal(t, expected, got)
+	assert.Len(t, got, int(segment64.Segment64HeaderSize))
 }
