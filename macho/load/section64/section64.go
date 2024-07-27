@@ -3,7 +3,6 @@ package section64
 import (
 	"bytes"
 	"encoding/binary"
-	"io"
 )
 
 type Section64Flags uint32
@@ -94,14 +93,4 @@ func (section Section64Header) MarshalBinary() ([]byte, error) {
 	}
 
 	return buffer.Bytes(), nil
-}
-
-func (section Section64Header) WriteTo(writer io.Writer) (int64, error) {
-	data, err := section.MarshalBinary()
-	if err != nil {
-		return 0, err
-	}
-
-	n, err := writer.Write(data)
-	return int64(n), err
 }

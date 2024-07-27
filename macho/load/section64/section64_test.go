@@ -1,7 +1,6 @@
 package section64_test
 
 import (
-	"bytes"
 	"testing"
 
 	"github.com/RealA10N/macho-aarch64-asm/macho/load/section64"
@@ -34,17 +33,7 @@ func TestSection64ExpectedBinary(t *testing.T) {
 		Flags:               section64.AttrPureInstructions | section64.AttrSomeInstructions,
 	}
 
-	{
-		got, err := section.MarshalBinary()
-		assert.NoError(t, err)
-		assert.Equal(t, expected, got)
-	}
-
-	{
-		buffer := new(bytes.Buffer)
-		n, err := section.WriteTo(buffer)
-		assert.NoError(t, err)
-		assert.EqualValues(t, section64.Section64HeaderSize, n)
-		assert.Equal(t, expected, buffer.Bytes())
-	}
+	got, err := section.MarshalBinary()
+	assert.NoError(t, err)
+	assert.Equal(t, expected, got)
 }
