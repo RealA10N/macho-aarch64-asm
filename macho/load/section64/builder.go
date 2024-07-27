@@ -3,7 +3,8 @@ package section64
 import (
 	"io"
 
-	"github.com/RealA10N/macho-aarch64-asm/macho/builder"
+	"github.com/RealA10N/macho-aarch64-asm/macho/builder/context"
+	writertoutils "github.com/RealA10N/writer-to-utils"
 )
 
 type Section64Builder struct {
@@ -25,11 +26,10 @@ func (builder Section64Builder) DataLen() uint64 {
 	return uint64(len(builder.Data))
 }
 
-func (builder Section64Builder) HeaderWriteTo(
-	writer io.Writer,
-	ctx builder.CommandBuilderContext,
-) (n int64, err error) {
-	section := Section64Header{
+func (builder Section64Builder) Build(
+	ctx *context.CommandContext,
+) Section64Header {
+	return Section64Header{
 		SectionName: builder.SectionName,
 		SegmentName: builder.SegmentName,
 		Address:     builder.Address,
@@ -38,7 +38,15 @@ func (builder Section64Builder) HeaderWriteTo(
 		Align:       builder.Align,
 		Flags:       builder.Flags,
 	}
-	return section.WriteTo(writer)
+}
+
+func (builder Section64Builder) HeaderWriteTo(
+	writer io.Writer,
+	ctx *context.CommandContext,
+) (int64, error) {
+	section := builder.Build(ctx)
+	writerTo := writertoutils.BinaryMarshalerAdapter(section)
+	return writerTo.WriteTo(writer)
 }
 
 func (builder Section64Builder) DataWriteTo(writer io.Writer) (int64, error) {
