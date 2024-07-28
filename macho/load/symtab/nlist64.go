@@ -5,7 +5,6 @@ import "github.com/RealA10N/macho-aarch64-asm/utils"
 type SymbolType uint8
 
 const (
-
 	// The n_type (SymbolType) field really contains four fields:
 	//  unsigned char N_STAB:3, (DebugSymbolMask)
 	//  N_PEXT:1, (PrivateExternalSymbolBit)
