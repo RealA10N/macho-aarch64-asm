@@ -3,7 +3,7 @@ package nlist64_builders_test
 import (
 	"testing"
 
-	nlist64 "github.com/RealA10N/macho-aarch64-asm/macho/load/nlist64"
+	"github.com/RealA10N/macho-aarch64-asm/macho/load/nlist64"
 	nlist64_builders "github.com/RealA10N/macho-aarch64-asm/macho/load/nlist64/builders"
 	"github.com/RealA10N/macho-aarch64-asm/macho/load/symtab/symbol"
 	"github.com/stretchr/testify/assert"
