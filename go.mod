@@ -3,7 +3,7 @@ module github.com/RealA10N/macho-aarch64-asm
 go 1.22.5
 
 require (
-	github.com/RealA10N/writer-to-utils v1.1.0
+	github.com/RealA10N/writer-to-utils v1.2.0
 	github.com/stretchr/testify v1.9.0
 )
 
