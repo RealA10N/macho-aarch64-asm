@@ -1,4 +1,4 @@
-package symtab
+package nlist64
 
 import "github.com/RealA10N/macho-aarch64-asm/utils"
 

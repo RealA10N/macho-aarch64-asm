@@ -1,9 +1,9 @@
-package symtab_test
+package nlist64_test
 
 import (
 	"testing"
 
-	"github.com/RealA10N/macho-aarch64-asm/macho/load/symtab"
+	"github.com/RealA10N/macho-aarch64-asm/macho/load/nlist64"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -13,11 +13,11 @@ func TestNlist64ExpectedBinary(t *testing.T) {
 		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 	}
 
-	nlist := symtab.Nlist64{
+	nlist := nlist64.Nlist64{
 		StringTableOffset: 1,
-		SymbolType:        symtab.SectionSymbolType | symtab.ExternalSymbol,
+		SymbolType:        nlist64.SectionSymbolType | nlist64.ExternalSymbol,
 		Section:           1,
-		Description:       symtab.ReferenceFlagUndefinedNonLazy,
+		Description:       nlist64.ReferenceFlagUndefinedNonLazy,
 		Value:             0,
 	}
 

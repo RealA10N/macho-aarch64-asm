@@ -5,20 +5,24 @@ import (
 	"testing"
 
 	"github.com/RealA10N/macho-aarch64-asm/macho/builder/context"
+	"github.com/RealA10N/macho-aarch64-asm/macho/load/nlist64"
 	"github.com/RealA10N/macho-aarch64-asm/macho/load/symtab"
+	"github.com/RealA10N/macho-aarch64-asm/macho/load/symtab/symbol"
 	"github.com/stretchr/testify/assert"
 )
 
 type MySymbolBuilder struct {
 	Name  string
-	Nlist symtab.Nlist64
+	Nlist nlist64.Nlist64
 }
 
 func (sym MySymbolBuilder) GenString() string {
 	return sym.Name
 }
 
-func (sym MySymbolBuilder) GenEntryList(ctx *symtab.SymtabContext) (symtab.Nlist64, error) {
+func (sym MySymbolBuilder) GenEntryList(
+	ctx *symbol.EntryListContext,
+) (nlist64.Nlist64, error) {
 	nlist := sym.Nlist
 	nlist.StringTableOffset = ctx.StringTableOffset
 	return nlist, nil
@@ -40,22 +44,22 @@ func TestSymtabBuilderExpectedBinary(t *testing.T) {
 		0x75, 0x62, 0x00,
 	}
 
-	addNlist := symtab.Nlist64{
-		SymbolType:  symtab.SectionSymbolType | symtab.ExternalSymbol,
+	addNlist := nlist64.Nlist64{
+		SymbolType:  nlist64.SectionSymbolType | nlist64.ExternalSymbol,
 		Section:     1,
-		Description: symtab.ReferenceFlagUndefinedNonLazy,
+		Description: nlist64.ReferenceFlagUndefinedNonLazy,
 		Value:       0,
 	}
 
-	subNlist := symtab.Nlist64{
-		SymbolType:  symtab.SectionSymbolType | symtab.ExternalSymbol,
+	subNlist := nlist64.Nlist64{
+		SymbolType:  nlist64.SectionSymbolType | nlist64.ExternalSymbol,
 		Section:     1,
-		Description: symtab.ReferenceFlagUndefinedNonLazy,
+		Description: nlist64.ReferenceFlagUndefinedNonLazy,
 		Value:       32,
 	}
 
 	builder := symtab.SymtabBuilder{
-		Symbols: []symtab.SymbolBuilder{
+		Symbols: []symbol.SymbolBuilder{
 			MySymbolBuilder{
 				Name:  "_add",
 				Nlist: addNlist,
@@ -91,5 +95,4 @@ func TestSymtabBuilderExpectedBinary(t *testing.T) {
 		assert.EqualValues(t, n, len(expectedData))
 		assert.Equal(t, expectedData, buffer.Bytes())
 	}
-
 }
