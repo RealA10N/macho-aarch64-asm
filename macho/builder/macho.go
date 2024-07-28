@@ -6,6 +6,7 @@ import (
 
 	"github.com/RealA10N/macho-aarch64-asm/macho/builder/context"
 	"github.com/RealA10N/macho-aarch64-asm/macho/header"
+	writertoutils "github.com/RealA10N/writer-to-utils"
 )
 
 type MachoBuilder struct {
@@ -30,7 +31,8 @@ func (macho MachoBuilder) WriteTo(writer io.Writer) (n int64, err error) {
 		SizeOfLoadCommands: uint32(headersLen),
 	}
 
-	n, err = macho.Header.Build(&ctx).WriteTo(writer)
+	machoHeader := macho.Header.Build(&ctx)
+	n, err = writertoutils.BinaryMarshalerAdapter(machoHeader).WriteTo(writer)
 	if err != nil {
 		return
 	}

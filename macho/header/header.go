@@ -9,7 +9,6 @@ package header
 import (
 	"bytes"
 	"encoding/binary"
-	"io"
 )
 
 type Magic uint32
@@ -98,14 +97,4 @@ func (header MachoHeader) MarshalBinary() ([]byte, error) {
 	}
 
 	return buffer.Bytes(), nil
-}
-
-func (header MachoHeader) WriteTo(writer io.Writer) (int64, error) {
-	data, err := header.MarshalBinary()
-	if err != nil {
-		return 0, err
-	}
-
-	n, err := writer.Write(data)
-	return int64(n), err
 }
