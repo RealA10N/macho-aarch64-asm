@@ -50,28 +50,27 @@ func TestSegment64BuilderExpectedBinary(t *testing.T) {
 		InitialProtections: segment64.AllowAllProtection,
 	}
 
-	// DataLen
-	assert.EqualValues(t, len(data), segmentBuilder.DataLen())
-
 	// HeaderLen
 	assert.EqualValues(t, len(expectedHeader), segmentBuilder.HeaderLen())
 
-	{
-		// DataWriteTo
-		dataBuffer := new(bytes.Buffer)
-		n, err := segmentBuilder.DataWriteTo(dataBuffer)
-		assert.NoError(t, err)
-		assert.EqualValues(t, len(data), n)
-
-	}
+	// DataLen
+	assert.EqualValues(t, len(data), segmentBuilder.DataLen())
 
 	{
 		// HeaderWriteTo
-		headerBuffer := new(bytes.Buffer)
+		buffer := bytes.Buffer{}
 		ctx := context.CommandContext{DataOffset: 1337}
-		n, err := segmentBuilder.HeaderWriteTo(headerBuffer, &ctx)
+		n, err := segmentBuilder.HeaderWriteTo(&buffer, &ctx)
 		assert.NoError(t, err)
 		assert.EqualValues(t, len(expectedHeader), n)
-		assert.Equal(t, expectedHeader, headerBuffer.Bytes())
+		assert.Equal(t, expectedHeader, buffer.Bytes())
+	}
+
+	{
+		// DataWriteTo
+		buffer := bytes.Buffer{}
+		n, err := segmentBuilder.DataWriteTo(&buffer)
+		assert.NoError(t, err)
+		assert.EqualValues(t, len(data), n)
 	}
 }

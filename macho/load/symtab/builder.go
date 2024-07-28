@@ -27,7 +27,9 @@ type SymtabBuilder struct {
 	Symbols []SymbolBuilder
 }
 
-func (builder SymtabBuilder) Build(
+// private methods
+
+func (builder SymtabBuilder) buildHeaderFromCtx(
 	ctx *context.CommandContext,
 ) SymtabHeader {
 	return SymtabHeader{
@@ -39,8 +41,6 @@ func (builder SymtabBuilder) Build(
 		StringTableSize:   uint32(builder.stringTableLen()),
 	}
 }
-
-// private methods
 
 func (builder SymtabBuilder) entryListLen() uint64 {
 	return Nlist64Size * uint64(len(builder.Symbols))
@@ -125,7 +125,7 @@ func (builder SymtabBuilder) HeaderWriteTo(
 	writer io.Writer,
 	ctx *context.CommandContext,
 ) (int64, error) {
-	header := builder.Build(ctx)
+	header := builder.buildHeaderFromCtx(ctx)
 	writerTo := writertoutils.BinaryMarshalerAdapter(header)
 	return writerTo.WriteTo(writer)
 }

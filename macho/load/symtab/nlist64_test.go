@@ -15,7 +15,7 @@ func TestNlist64ExpectedBinary(t *testing.T) {
 
 	nlist := symtab.Nlist64{
 		StringTableOffset: 1,
-		SymbolType:        symtab.SectionSymbolType | symtab.ExternalSymbolBit,
+		SymbolType:        symtab.SectionSymbolType | symtab.ExternalSymbol,
 		Section:           1,
 		Description:       symtab.ReferenceFlagUndefinedNonLazy,
 		Value:             0,

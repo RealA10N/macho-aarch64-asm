@@ -12,10 +12,10 @@ const (
 	//  N_EXT:1; (ExternalSymbolBit)
 	// which are used via the following masks.
 
-	DebugSymbolMask          SymbolType = 0xe0 // if any of these bits set, a symbolic debugging entry
-	PrivateExternalSymbolBit SymbolType = 0x10 // private external symbol bit
-	TypeSymbolMask           SymbolType = 0x0e // mask for the type bits
-	ExternalSymbolBit        SymbolType = 0x01 // external symbol bit, set for external symbols
+	DebugSymbolMask       SymbolType = 0xe0 // if any of these bits set, a symbolic debugging entry
+	PrivateExternalSymbol SymbolType = 0x10 // private external symbol bit
+	TypeSymbolMask        SymbolType = 0x0e // mask for the type bits
+	ExternalSymbol        SymbolType = 0x01 // external symbol bit, set for external symbols
 
 	// Only symbolic debugging entries have some of the N_STAB bits set and if any
 	// of these bits are set then it is a symbolic debugging entry (a stab).  In
