@@ -37,6 +37,11 @@ const (
 	ReferenceTypeMask SymbolDescription = 0x7
 
 	// types of references
+	// non lazy: 	data symbol
+	// lazy: 		function symbol
+	// private:		visible only to this shared library
+	// defined:		references data/function in this module
+	// undefined:	references data/function in another module, should be addressed by linker or compiler
 	ReferenceFlagUndefinedNonLazy        SymbolDescription = 0
 	ReferenceFlagUndefinedLazy           SymbolDescription = 1
 	ReferenceFlagDefined                 SymbolDescription = 2
@@ -56,7 +61,7 @@ type Nlist64 struct {
 	SymbolType        SymbolType
 	Section           uint8 // the number of the section that this symbol can be found in
 	Description       SymbolDescription
-	Value             uint64
+	Value             uint64 // if (SymbolType == SectionSymbolType), this is an offset in the section
 }
 
 const Nlist64Size uint64 = 0x10
