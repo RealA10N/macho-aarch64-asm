@@ -18,14 +18,6 @@ type Section64Builder struct {
 	// TODO: support Relocations
 }
 
-func (builder Section64Builder) HeaderLen() uint64 {
-	return Section64HeaderSize
-}
-
-func (builder Section64Builder) DataLen() uint64 {
-	return uint64(len(builder.Data))
-}
-
 func (builder Section64Builder) Build(
 	ctx *context.CommandContext,
 ) Section64Header {
@@ -38,6 +30,16 @@ func (builder Section64Builder) Build(
 		Align:       builder.Align,
 		Flags:       builder.Flags,
 	}
+}
+
+// CommandBuilder Implementation
+
+func (builder Section64Builder) HeaderLen() uint64 {
+	return Section64HeaderSize
+}
+
+func (builder Section64Builder) DataLen() uint64 {
+	return uint64(len(builder.Data))
 }
 
 func (builder Section64Builder) HeaderWriteTo(
