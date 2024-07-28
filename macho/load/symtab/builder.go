@@ -1,7 +1,9 @@
 package symtab
 
 import (
+	"fmt"
 	"io"
+	"unicode"
 
 	"github.com/RealA10N/macho-aarch64-asm/macho/builder/context"
 	"github.com/RealA10N/macho-aarch64-asm/macho/load"
@@ -12,10 +14,13 @@ type SymtabContext struct {
 	StringTableOffset uint32
 }
 
+func (ctx *SymtabContext) updateAfterProcessing(sym SymbolBuilder) {
+	ctx.StringTableOffset += uint32(len(sym.GenString())) + 1
+}
+
 type SymbolBuilder interface {
-	StringLen() uint32
-	WriteToStringTable(io.Writer) (int64, error)
-	WriteToEntryList(io.Writer, *SymtabContext) (int64, error)
+	GenString() string
+	GenEntryList(*SymtabContext) (Nlist64, error)
 }
 
 type SymtabBuilder struct {
@@ -42,11 +47,11 @@ func (builder SymtabBuilder) entryListLen() uint64 {
 }
 
 func (builder SymtabBuilder) stringTableLen() uint64 {
-	var len uint64 = 1 // string table is always prefixed with a nullbyte.
+	var n uint64 = 1 // string table is always prefixed with a nullbyte.
 	for _, symbol := range builder.Symbols {
-		len += uint64(symbol.StringLen()) + 1 // add null terminator for each string
+		n += uint64(len(symbol.GenString())) + 1 // add null terminator for each string
 	}
-	return len
+	return n
 }
 
 // data builders
@@ -54,32 +59,43 @@ func (builder SymtabBuilder) stringTableLen() uint64 {
 type writerToEntryList struct{ *SymtabBuilder }
 
 func (builder writerToEntryList) WriteTo(writer io.Writer) (n int64, err error) {
-	var k int64
-
 	ctx := SymtabContext{
 		// the string table is always prefixed with a nullbyte,
 		// so the initial offset is 1 and not 0.
 		StringTableOffset: 1,
 	}
 
+	writerTos := []io.WriterTo{}
+
 	for _, symbol := range builder.Symbols {
-		k, err = symbol.WriteToEntryList(writer, &ctx)
-		n += k
+		var nlist Nlist64
+		nlist, err = symbol.GenEntryList(&ctx)
 		if err != nil {
 			return
 		}
 
-		// +1 for the null terminating byte
-		ctx.StringTableOffset += symbol.StringLen() + 1
+		nlistWriterTo := writertoutils.BinaryMarshalerAdapter(nlist)
+		writerTos = append(writerTos, nlistWriterTo)
+		ctx.updateAfterProcessing(symbol)
 	}
 
-	return
+	multiWriterTo := writertoutils.MultiWriterTo(writerTos...)
+	return multiWriterTo.WriteTo(writer)
 }
 
 type symbolWriterToStringTable struct{ SymbolBuilder }
 
 func (symbol symbolWriterToStringTable) WriteTo(writer io.Writer) (int64, error) {
-	return symbol.WriteToStringTable(writer)
+	str := symbol.GenString()
+	for i, rune := range str {
+		if rune > unicode.MaxASCII {
+			err := fmt.Errorf("symbol %s is not an ascii string (at rune index %d)", str, i)
+			return 0, err
+		}
+	}
+
+	n, err := io.WriteString(writer, str)
+	return int64(n), err
 }
 
 type writerToStringTable struct{ *SymtabBuilder }
