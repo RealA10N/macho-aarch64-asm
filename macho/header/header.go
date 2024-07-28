@@ -7,8 +7,7 @@
 package header
 
 import (
-	"bytes"
-	"encoding/binary"
+	"github.com/RealA10N/macho-aarch64-asm/utils"
 )
 
 type Magic uint32
@@ -89,12 +88,5 @@ type MachoHeader struct {
 const MachoHeaderSize uint64 = 0x20
 
 func (header MachoHeader) MarshalBinary() ([]byte, error) {
-	buffer := new(bytes.Buffer)
-	err := binary.Write(buffer, binary.LittleEndian, header)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return buffer.Bytes(), nil
+	return utils.GenericMarshalBinary(header)
 }

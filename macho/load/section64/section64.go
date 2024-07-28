@@ -1,8 +1,7 @@
 package section64
 
 import (
-	"bytes"
-	"encoding/binary"
+	"github.com/RealA10N/macho-aarch64-asm/utils"
 )
 
 type Section64Flags uint32
@@ -85,12 +84,5 @@ type Section64Header struct {
 const Section64HeaderSize uint64 = 0x50
 
 func (section Section64Header) MarshalBinary() ([]byte, error) {
-	buffer := new(bytes.Buffer)
-	err := binary.Write(buffer, binary.LittleEndian, section)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return buffer.Bytes(), nil
+	return utils.GenericMarshalBinary(section)
 }

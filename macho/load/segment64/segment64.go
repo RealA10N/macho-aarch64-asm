@@ -1,10 +1,8 @@
 package segment64
 
 import (
-	"bytes"
-	"encoding/binary"
-
 	"github.com/RealA10N/macho-aarch64-asm/macho/load"
+	"github.com/RealA10N/macho-aarch64-asm/utils"
 )
 
 type VirtualMemoryProtection uint32
@@ -80,12 +78,5 @@ type Segment64Header struct {
 const Segment64HeaderSize uint64 = 0x48
 
 func (segment Segment64Header) MarshalBinary() ([]byte, error) {
-	buffer := new(bytes.Buffer)
-	err := binary.Write(buffer, binary.LittleEndian, segment)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return buffer.Bytes(), nil
+	return utils.GenericMarshalBinary(segment)
 }
